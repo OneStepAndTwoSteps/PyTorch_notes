@@ -21,7 +21,7 @@
         z.backward()
 
 
-* `案例：x.betach：`
+* `案例：x.betach：给x使用了.detach 之后，x的梯度就不进行计算了，本来对z进行反向传播会计算得到前面节点的梯度，但是现在不计算 x 梯度。`
 
         import torch as t
 
