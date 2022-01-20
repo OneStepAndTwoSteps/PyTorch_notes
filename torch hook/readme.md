@@ -6,6 +6,13 @@
 
 如果不设置 `hook` 的话也可以通过对中间节点设置 `.retain_grad()` 方法。
 
+
+## `Hook for Modules：针对例如 nn.Conv2dnn.Linear等网络模块的 hook`
+
+* `register_forward_hook：`前向传播的 hook。
+
+* `register_backward_hook：`反向传播的 hook。
+
 ### `案例：register_forward_hook`
 
 * 如果随机的初始化每个层，那么就无法测试出自己获取的输入输出是不是 `forward` 中的输入输出了，所以需要将每一层的权重和偏置设置为可识别的值（比如全部初始化为1）。网络包含两层（ `Linear` 有需要求导的参数被称为一个层，而 `ReLU` 没有需要求导的参数不被称作一层），`__init__()` 中调用 `initialize` 函数对所有层进行初始化。
@@ -108,6 +115,61 @@
         print("sub result")
         for forward_return, hook_record in zip(features_in_forward, features_in_hook):
             print(forward_return-hook_record[0])
+
+
+### `定义一个简单的 hook`
+
+对预训练好的模型进行 hook，查看前向传播过程中每一层的输入和输出，下面代码只获取了输出：
+    
+    ## 1、导入模块
+    import numpy as np  
+    import pandas as pd
+    import matplotlib.pyplot as plt
+    import requests
+    import cv2
+    import torch
+    from torch import nn
+    import torch.nn.functional as F
+    ## model 包含用于处理不同任务的模型定义，包括：图像分类、像素语义分割、对象检测、实例分割、人物关键点检测和视频分类。
+    ## https://pytorch-cn.readthedocs.io/zh/latest/torchvision/torchvision-models/
+    from torchvision import models   
+    from torchvision import transforms
+    from PIL import Image
+
+
+    ## 2、加载 VGG16 模型
+    vgg16 = models.vgg16(pretrained=True)    ## pretrained 如果为True，则返回在ImageNet上预先训练的模型
+    print(vgg16)
+
+
+
+    ## 3、使用钩子获取分类层的2个特征
+    ## 定义一个辅助函数，来获取指定层名称的特征
+    activation = {} ## 保存不同层的输出
+    def get_activation(name):
+        def hook(model, fea_in, fea_out):
+            activation[name] = fea_out
+        return hook
+
+
+    ## 4、获取中间的卷积后的图像特征
+    vgg16.eval()
+    ## 获取第一层特征，并且给其取名为 Conv2d1
+    handle = vgg16.features[0].register_forward_hook(get_activation("Conv2d1"))
+    ## 向模型中输入数据
+    _ = vgg16(input_im)
+    ## 将activation中保存的 fea_out 赋值给变量 Conv2d1
+    Conv2d1 = activation["Conv2d1"]
+    print("获取特征的尺寸为:",Conv2d1.shape)
+
+
+    ## 5、需要注意的是hook函数在使用后应及时删除，以避免每次都运行增加运行负载，移除hook：
+    handle.remove()
+
+
+
+
+
 
 
 ## `参考链接：`
