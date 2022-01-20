@@ -109,3 +109,9 @@
         for forward_return, hook_record in zip(features_in_forward, features_in_hook):
             print(forward_return-hook_record[0])
 
+
+## `参考链接：`
+
+* `pytorch的hook机制之register_forward_hook：`http://www.360doc.com/content/19/0726/16/32196507_851161514.shtml
+
+* `pytorch的hook机制之register_forward_hook：`https://zhuanlan.zhihu.com/p/87853615
