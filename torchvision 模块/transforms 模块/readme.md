@@ -2,6 +2,10 @@
 
 `图像预处理模块` —— `transforms`：常用的图像操作，如 `随机切割`、`旋转`、`数据类型转换`、`tensor` 与 `numpy` 和 `PIL` `Image` 的互换等。
 
+`加载模块：`
+
+    from torchvision import transforms
+
 
 ## <font color= #EC7063  >1、transforms.ToTensor：</font > 
 
@@ -46,3 +50,38 @@
             transforms.PILToTensor(),
             transforms.ConvertImageDtype(torch.float),
             ])
+
+
+## <font color= #EC7063  >4、transforms.RandomResizedCrop：</font > 
+
+* 在随机位置裁剪图像，然后将裁剪的大小调整为给定大小。
+
+    可以放在 `transforms.Compose` 中，也可以单独对图像进行调整：
+
+        transforms.RandomResizedCrop(32)(img) ## 第一个参数是调整的图像大小，第二个参数是调整的图片。
+
+    <div align=center><img height= 150 src="./static/RandomResizedCrop1.jpg"/></div>
+
+    会模糊的原因是图片裁剪的太小了，裁到了32。
+
+
+## <font color= #EC7063  >5、transforms.RandomHorizontalFlip</font > 
+
+
+* 对图像进行一定概率的随机水平翻转，默认概率为0.5。
+
+        transforms.RandomHorizontalFlip (0.5)(img) ## img 为图片
+
+    <div align=center><img height= 150 src="./static/RandomHorizontalFlip1.jpg"/></div>
+
+
+
+
+
+
+## `参考：`
+
+
+* `transform 的变换示例，ILLUSTRATION OF TRANSFORMS：`https://pytorch.org/vision/stable/auto_examples/plot_transforms.html#centercrop
+
+
