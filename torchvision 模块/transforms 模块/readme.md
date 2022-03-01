@@ -11,7 +11,7 @@
 
 * `ToTensor()` 将 `shape` 为 `(H, W, C)` 的 `numpy.ndarray` 或 `img` 转为 `shape` 为 `(C, H, W)` 的 `tensor` ，归一化至 `[0,1] ` 是直接除以 `255` ，每个像素变成一个 `32` 位的浮点类型。
 
-
+* 注意不是把 numpy 数据转成 tensor 形状就会发生变化，要使用 ToTensor 才会变化。 
 
 
 ## <font color= #EC7063  >2、transforms.Normalize：</font > 
