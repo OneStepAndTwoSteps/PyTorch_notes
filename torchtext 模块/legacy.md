@@ -9,14 +9,76 @@
 * `data` 中有三个模块，分别是：`Field、TabularDataset、BucketIterator`。
 
 
-    * `Field` :主要包含以下数据预处理的配置信息，比如指定分词方法，是否转成小写，起始字符，结束字符，补全字符以及词典等等。
-
-    * `TabularDataset` :继承自 `pytorch` 的 `Dataset` ，用于加载数据， `TabularDataset` 可以指点路径，格式， `Field` 信息就可以方便的完成数据加载。同时 `torchtext` 还提供预先构建的常用数据集的 `Dataset` 对象，可以直接加载使用， `splits` 方法可以同时加载训练集，验证集和测试集。
+    * `Field` :`Torchtext` 采用声明式方法加载数据，需要先声明一个 `Field` 对象，这个Field对象指定你想要怎么处理某个数据，主要包含以下数据预处理的配置信息，比如指定分词方法，是否转成小写，起始字符，结束字符，补全字符以及词典等等。
+ 
+    * `TabularDataset` : `Field` 知道怎么处理原始数据，现在我们需要告诉 `Field` 去处理哪些数据。这就是我们需要用到 `Dataset` 的地方。 `TabularDataset` 继承自 `pytorch` 的 `Dataset` ，用于加载数据， `TabularDataset` 可以指点路径，格式， `Field` 信息就可以方便的完成数据加载。同时 `torchtext` 还提供预先构建的常用数据集的 `Dataset` 对象，可以直接加载使用， `splits` 方法可以同时加载训练集，验证集和测试集。
 
     * `BucketIterator` : 主要是数据输出的模型的迭代器，用于设置 `batch` ，相当于 `DataLoader` ，相比于标准迭代器，`BucketIterator` 会将类似长度的样本当做一批来处理，因为在文本处理中经常会需要将每一批样本长度补齐为当前批中最长序列的长度，因此当样本长度差别较大时，使用 `BucketIerator` 可以带来填充效率的提高。除此之外，我们还可以在 `Field` 中通过 `fix_length` 参数来对样本进行截断补齐操作。。
 
+## `二、参数说明：`
 
-## `二、用法：`
+* `1、torchtext.data.Field：`
+
+        torchtext.data.Field(sequential=True, use_vocab=True, init_token=None, eos_token=None, 
+                             fix_length=None, dtype=torch.int64, preprocessing=None, postprocessing=None, 
+                             lower=False, tokenize=None, tokenizer_language='en',include_lengths=False, 
+                             batch_first=False, pad_token='<pad>', unk_token='<unk>', 
+                             pad_first=False, truncate_first=False, stop_words=None, is_target=False)
+
+* `参数具体详解：`
+
+        sequential: 是否把数据表示成序列，如果是False, 不能使用分词 默认值: True.
+
+        use_vocab: 是否使用词典对象. 如果是False 数据的类型必须已经是数值类型. 默认值: True.
+
+        init_token: 每一条数据的起始字符 默认值: None.
+
+        eos_token: EOS 默认值: None.
+
+        fix_length: 修改每条数据的长度为该值，不够的用pad_token补全. 默认值: None.
+
+        tensor_type: 把数据转换成的tensor类型 默认值: torch.LongTensor.
+
+        preprocessing:在分词之后和数值化之前使用的管道 默认值: None.
+
+        postprocessing: 数值化之后和转化成tensor之前使用的管道默认值: None.
+
+        lower: 是否把数据转化为小写 默认值: False.
+
+        tokenize: 分词函数. 默认值: str.split.
+
+        include_lengths: 是否返回一个已经补全的最小batch的元组和和一个包含每条数据长度的列表 . 默认值: False.
+
+        batch_first: 是否Batch first. 默认值: False.
+
+        pad_token: PAD 默认值: "".
+
+        unk_token: UNK 默认值: "".
+
+        pad_first: 是否补全第一个字符. 默认值: False.
+
+* `2、torchtext.data.TranslationDataset`
+
+        torchtext.datasets.TranslationDataset(path, exts, fields, **kwargs)
+
+* `参数具体详解：`
+
+
+        path: 两种语言的数据文件的路径的公共前缀
+
+        exts: 包含每种语言路径扩展名的tuple
+
+        fields: 包含将用于每种语言的Field的tuple
+
+        **kwargs: 等等
+
+
+
+
+
+
+
+## `三、用法：`
 
 * `导入模块：`
 
